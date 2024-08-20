@@ -17,7 +17,7 @@ exports.registerUser = async (req,res) => {
        const existingUser =await  User.findOne({where:{email:email}} );
 
        if(existingUser){
-        res.status(409).json({message:'Mail already used'});
+        res.status(409).json({message:'User already exists, please login'});
        }else{
 
         console.log('************Adding user*************')
@@ -34,7 +34,7 @@ exports.registerUser = async (req,res) => {
 
      console.log(newUser)
 
-            res.status(200).json({message:'User Registered Successfully',userId:newUser.id});
+            res.status(201).json({message:'User Registered Successfully',userId:newUser.id});
 
        }
            

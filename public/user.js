@@ -22,13 +22,22 @@ form.addEventListener('submit',(event) => {
     const User = {username,email,password,phone};
 
     axios.post(`${BASE_URL}/user/register`,User)
-    .then((user) => {
+    .then(() => {
         // console.log(res);
-        console.log("User Registered")
-        document.getElementById('registerForm').reset();
-        window.confirm("User Signed Up Successfully");
+      
+            console.log("User Registered")
+            document.getElementById('registerForm').reset();
+            window.confirm("User Signed Up Successfully");
+    
+        
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+        if (err.response && err.response.status === 409) {
+            alert('This email is already registered. Please use another one or log in.');
+        } else {
+            console.error(err);
+        }
+});
 
     
 
