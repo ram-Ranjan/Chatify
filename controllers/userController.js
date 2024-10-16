@@ -2,7 +2,7 @@
 const bcrypt = require('bcrypt')
 const User = require('../models/user');
 const Sequelize = require('sequelize')
-
+const jwt = require('jsonwebtoken');
 exports.registerUser = async (req,res) => {
 
 
@@ -45,4 +45,44 @@ exports.registerUser = async (req,res) => {
     }
      
 }
+
+exports.loginUser = async (req,res) => {
+    try{
+        const{email,password} =req.body;
+
+        const existingUser =await User.findOne({where:{email}})
+        console.log(existingUser);
+
+        if(!existingUser)         
+            return res.status(404).json({message:"User Doesn't Exist"});
+
+        else if( !await bcrypt.compare(password,existingUser.password)){
+            return res.status(401).json({message:"Invalid Credentials"});
+        }
+
+        console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+
+        console.log(existingUser);
+       
+        const token = jwt.sign(
+            {
+                id:existingUser.id,
+                email: existingUser.email,
+            },
+            process.env.JWT_TOKEN_SECRET,
+            {
+                expiresIn:"1h"
+            }
+        );
+
+       return res.json({token});
+        
+
+    }
+    catch(error){
+        console.error("Error",error);
+        return res.status(500).json({error:"Server error"});
+
+    }
+};
 

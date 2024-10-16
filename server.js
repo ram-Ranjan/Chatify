@@ -7,9 +7,18 @@ const app = express();
 const cors = require('cors')
 
 app.use(cors({
-    origin:"http://192.168.0.104:5500",
+    origin: (origin, callback) => {
+        const allowedOrigins = ['http://10.20.20.153:5500', 'http://localhost:5500'];  // Add multiple origins
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials:true
 }));
+
+app.options('*', cors());
 
 
 app.use(express.static(path.join(__dirname,'public')));
