@@ -7,15 +7,8 @@ const app = express();
 const cors = require('cors')
 
 app.use(cors({
-    origin: (origin, callback) => {
-        const allowedOrigins = ['http://10.20.20.153:5500', 'http://localhost:5500'];  // Add multiple origins
-        if (allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials:true
+    origin: ['http://192.168.0.100:5500', 'http://localhost:5500','http://192.168.211.13:5500'],
+    credentials: true
 }));
 
 app.options('*', cors());
@@ -24,8 +17,19 @@ app.options('*', cors());
 app.use(express.static(path.join(__dirname,'public')));
 app.use(express.json());
 
+const User = require('./models/user');
+const Message = require('./models/message');
+
+User.hasMany(Message);
+Message.belongsTo(User);
+
+
+
 const userRoutes = require('./routes/userRoutes');
 app.use('/api/user',userRoutes);
+
+
+
 
 
 sequelize

@@ -59,12 +59,17 @@ if(loginForm){
         }
       
         const User = { email: email, password: password };
-      
         axios
           .post(`${BASE_URL}/user/login`, { email, password })
           .then((response) => {
             localStorage.setItem("authToken", response.data.token);
-            alert("User Logged In successfully!");
+            if(response.data.username){
+            }
+            localStorage.setItem("username", response.data.username);
+             alert("User Logged In successfully!");
+
+            window.location.href='home.html';
+
 
             // window.location.href='dashboard.html';
           })
@@ -72,8 +77,10 @@ if(loginForm){
             if (error.response && error.response.status == 401) {
               alert("Incorrect Credentials");
             } else {
-              alert("Login failed. Please try again later.");
-            }
+              const errorMessage =
+              error.response?.data?.error || "An unknown error occurred";
+            alert("User Log In Failed: " + errorMessage);
+              }
           });
       });
 }
