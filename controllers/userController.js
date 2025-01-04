@@ -85,7 +85,6 @@ exports.addMessage = async (req, res) => {
         return res.sendStatus(403);
       }
       req.user = user; //Then only req will have authorised user
-
       try {
         Message.create({
           body: message,
@@ -101,3 +100,40 @@ exports.addMessage = async (req, res) => {
     res.sendStatus(401);
   }
 };
+
+
+exports.getMessages = async (req,res) => {
+try{
+  const messages = await Message.findAll({
+    include:[
+      {
+        model:User,
+        attributes:['username'] // err attribute_s_
+      },
+    ],
+  order: [
+    ['createdAt','Asc'] 
+  ],
+});
+//err format before sending
+const formattedMessages = messages.map((message) => ({
+  id: message.id,
+  body: message.body,
+  username: message.user.username, // Access the user's name
+  createdAt: message.createdAt,
+}));
+
+console.log(formattedMessages);
+return res.status(200).json({  messages: formattedMessages });
+}
+catch(err){
+  console.error(err);
+  res.status(500).json({ message: "Error fetching message" });
+}
+// const formattedMessages = messages.map(message => {
+//   return `${message.username}: ${message.content}`
+// })
+
+// console.log(formattedMessages);
+};
+

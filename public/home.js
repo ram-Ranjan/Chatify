@@ -1,8 +1,37 @@
 // Add event listener to the send button
 
 const BASE_URL = "http://localhost:3000/api";
-
 let count = 0;
+
+
+document.addEventListener('DOMContentLoaded',showMessages());
+
+
+function showMessages(){
+  count=0;
+  axios
+  .get(`${BASE_URL}/user/getAllMessages`)
+  .then((response)=> {
+
+   const chats = document.querySelector('.chat-messages');
+   const messages = response.data.messages;
+    formatedMessages = messages.map(message=> {
+      const messageElem =document.createElement('div');
+      messageElem.style.background=count%2==0?'grey':'white';
+      messageElem.textContent = `${message.username} : ${message.body}`;
+      count++;
+
+      chats.appendChild(messageElem)
+      chats.scrollTop = chats.scrollHeight;
+    })
+  })
+  .catch((err) => {
+    alert("server error")
+  })
+}
+
+
+
 document.querySelector(".send-btn").addEventListener("click", sendMessage);
 
 function sendMessage() {
@@ -19,7 +48,7 @@ function sendMessage() {
     return;
   }
 
-  const messageWithUser = user + " : " + message;
+  const messageWithUser = user + " : " + message; 
 
   axios
     .post(`${BASE_URL}/user/message`, {message:message,token:token})
