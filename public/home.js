@@ -4,7 +4,6 @@ const BASE_URL = "http://localhost:3000/api";
 let count = 0;
 
 
-document.addEventListener('DOMContentLoaded',showMessages());
 
 
 function showMessages(){
@@ -14,6 +13,8 @@ function showMessages(){
   .then((response)=> {
 
    const chats = document.querySelector('.chat-messages');
+   chats.innerHTML = '';
+
    const messages = response.data.messages;
     formatedMessages = messages.map(message=> {
       const messageElem =document.createElement('div');
@@ -83,3 +84,8 @@ function sendMessage() {
       }
     });
 }
+
+
+setInterval(showMessages,2000);
+
+document.addEventListener('DOMContentLoaded',showMessages());
