@@ -104,15 +104,19 @@ exports.addMessage = async (req, res) => {
 
 exports.getMessages = async (req,res) => {
 try{
+  const lastFetchId = req.query.lastFetchId || -1;
+
   const messages = await Message.findAll({
+    where: lastFetchId !== -1 ? { id: { [Sequelize.Op.gt]:lastFetchId}}: {},
     include:[
       {
         model:User,
         attributes:['username'] // err attribute_s_
       },
     ],
+    limit:10,
   order: [
-    ['createdAt','Asc'] 
+    ['createdAt','ASC'] 
   ],
 });
 //err format before sending
@@ -130,10 +134,5 @@ catch(err){
   console.error(err);
   res.status(500).json({ message: "Error fetching message" });
 }
-// const formattedMessages = messages.map(message => {
-//   return `${message.username}: ${message.content}`
-// })
-
-// console.log(formattedMessages);
 };
 

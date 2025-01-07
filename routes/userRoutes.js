@@ -12,7 +12,7 @@ router.post('/login',userController.loginUser);
 
 router.post('/message',userController.addMessage);
 
-router.get('/getAllMessages',userController.getMessages)
+router.get('/getMessages',userController.getMessages)
 
 
 module.exports=router;
